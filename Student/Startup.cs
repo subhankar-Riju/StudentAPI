@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Student.Data;
+using Student.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace Student
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddDbContext<StudentDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("StudentDb"))
                 ); 

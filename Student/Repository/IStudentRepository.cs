@@ -9,6 +9,7 @@ namespace Student.Repository
     public interface IStudentRepository
     {
        Task<List<StudentModel>> GetAllStudentsAsync();
+        Task<List<StudentModel>> GetStudentById(int StudentId);
 
     }
 }

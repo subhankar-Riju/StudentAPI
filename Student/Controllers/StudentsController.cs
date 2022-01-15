@@ -16,14 +16,24 @@ namespace Student.Controllers
 
         public StudentsController(IStudentRepository studentRepository)
         {
-            _studentRepository =studentRepository;
+            _studentRepository = studentRepository;
         }
 
+        [HttpGet]
         public async Task<IActionResult> GetAllStudentsAsync()
         {
             var records = await _studentRepository.GetAllStudentsAsync();
 
             return Ok(records);
+        }
+
+        [HttpGet("{id}")]
+
+        public async Task<IActionResult> GetStudentByIdAsync([FromRoute]int id)
+        {
+            var record = await _studentRepository.GetStudentById(id);
+
+            return Ok(record);
         }
     }
 }

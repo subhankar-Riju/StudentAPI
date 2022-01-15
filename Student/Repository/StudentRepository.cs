@@ -28,6 +28,26 @@ namespace Student.Repository
 
             return records;
         }
+
+
+        public async Task<List<StudentModel>> GetStudentById(int StudentId)
+        {
+            var record = await _context.students
+                        .Where(x => x.Id == StudentId)
+                        .Select(x => new StudentModel()
+                        {
+                            Id = x.Id,
+                            Roll = x.Roll,
+                            Name = x.Name,
+                            Class = x.Class
+                        }).ToListAsync();
+            return record;
+
+        }
+
+
+
+
     }
 
    

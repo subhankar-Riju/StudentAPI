@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Student.Model;
 using Student.Repository;
 using System;
 using System.Collections.Generic;
@@ -29,11 +30,22 @@ namespace Student.Controllers
 
         [HttpGet("{id}")]
 
-        public async Task<IActionResult> GetStudentByIdAsync([FromRoute]int id)
+        public async Task<IActionResult> GetStudentByIdAsync([FromRoute] int id)
         {
             var record = await _studentRepository.GetStudentById(id);
 
             return Ok(record);
         }
+
+
+        [HttpPost("{id}")]
+        public async Task<IActionResult> PostStudent([FromRoute]int id,[FromBody] StudentModel stu)
+        {
+            await _studentRepository.PostStudentAsync(id, stu);
+
+            return Ok();
+        }
+
+
     }
 }

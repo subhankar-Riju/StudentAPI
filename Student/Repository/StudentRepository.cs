@@ -46,7 +46,20 @@ namespace Student.Repository
         }
 
 
+        public async Task PostStudentAsync(int id,StudentModel student)
+        {
+            var students= new Students()
+            {
+                Class = student.Class,
+                Name = student.Name,
+                Roll = student.Roll
+            };
 
+            await _context.students.AddAsync(students);
+            await _context.SaveChangesAsync();
+
+            
+        }
 
     }
 

@@ -39,13 +39,21 @@ namespace Student.Controllers
 
 
         [HttpPost("{id}")]
-        public async Task<IActionResult> PostStudent([FromRoute]int id,[FromBody] StudentModel stu)
+        public async Task<IActionResult> PostStudent([FromRoute] int id, [FromBody] StudentModel stu)
         {
             await _studentRepository.PostStudentAsync(id, stu);
 
             return Ok();
         }
 
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutStudent([FromRoute] int id,[FromBody]StudentModel student)
+        {
+            await _studentRepository.PutStudentAsync(id, student);
+
+            return Ok();
+        }
 
     }
 }

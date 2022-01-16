@@ -11,6 +11,7 @@ namespace Student.Repository
        Task<List<StudentModel>> GetAllStudentsAsync();
         Task<List<StudentModel>> GetStudentById(int StudentId);
         Task PostStudentAsync(int id, StudentModel student);
+        Task PutStudentAsync(int id, StudentModel studentModel);
 
     }
 }

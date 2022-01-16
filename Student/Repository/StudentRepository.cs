@@ -61,6 +61,19 @@ namespace Student.Repository
             
         }
 
+        public async Task PutStudentAsync(int id,StudentModel studentModel)
+        {
+            var student = await _context.students.FindAsync(id);
+            if(student != null)
+            {
+                student.Name = studentModel.Name;
+                student.Roll = studentModel.Roll;
+                student.Class = studentModel.Class;
+
+                await _context.SaveChangesAsync();
+            }
+        }
+
     }
 
    

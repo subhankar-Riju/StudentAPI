@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.EntityFrameworkCore;
 using Student.Data;
 using Student.Model;
 using System;
@@ -72,6 +73,14 @@ namespace Student.Repository
 
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task PatchStudentAsync(int id,JsonPatchDocument student)
+        {
+            var Student = await _context.students.FindAsync(id);
+
+            student.ApplyTo(Student);
+            await _context.SaveChangesAsync();
         }
 
     }

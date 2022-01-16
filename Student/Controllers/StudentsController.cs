@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Student.Model;
 using Student.Repository;
@@ -55,5 +56,13 @@ namespace Student.Controllers
             return Ok();
         }
 
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchStudent([FromRoute] int id, [FromBody]JsonPatchDocument student)
+        {
+            await _studentRepository.PatchStudentAsync(id, student);
+            return Ok();
+
+        }
     }
 }

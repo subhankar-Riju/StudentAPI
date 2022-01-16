@@ -33,7 +33,7 @@ namespace Student
             services.AddDbContext<StudentDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("StudentDb"))
                 ); 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Student", Version = "v1" });

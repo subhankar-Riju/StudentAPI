@@ -29,6 +29,12 @@ namespace Student
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options => {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                });
+            });
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddDbContext<StudentDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("StudentDb"))
@@ -53,6 +59,7 @@ namespace Student
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors();
 
             app.UseAuthorization();
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Student.Model;
 using System;
 using System.Collections.Generic;
@@ -9,11 +10,14 @@ namespace Student.Repository
 {
     public interface IStudentRepository
     {
-       Task<List<StudentModel>> GetAllStudentsAsync();
+       Task<IEnumerable<StudentModel>> GetAllStudentsAsync(HttpResponse res,CursorParams @params);
         Task<List<StudentModel>> GetStudentById(int StudentId);
         Task PostStudentAsync(int id, StudentModel student);
         Task PutStudentAsync(int id, StudentModel studentModel);
         Task PatchStudentAsync(int id, JsonPatchDocument student);
+
+        Task DeleteStudent(int roll);
+
 
     }
 }

@@ -11,5 +11,10 @@ namespace Student.Data
         public int Roll { get; set; }
         public string Name { get; set; }
         public int Class { get; set; }
+        public string FathersName { get; set; }
+        public string Mothersname { get; set; }
+        public string City { get; set; }
+        public string Address { get; set; }
+
     }
 }

@@ -19,27 +19,81 @@ namespace Student.Repository
             _context = context;
         }
 
-        public async Task<IEnumerable<StudentModel>> GetAllStudentsAsync(HttpResponse res,CursorParams @params)
-        {
-            /* var records =await  _context.students.Select(x => new StudentModel() { 
-             Id=x.Id,
-             Name=x.Name,
-             Class=x.Class,
-             Roll=x.Roll,
-             FathersName=x.FathersName,
-             Mothersname=x.Mothersname,
-             Address=x.Address,
-             City=x.City
-             }).ToListAsync();*/
 
-            var stu = await _context.students
-                 .OrderBy(x => x.Roll)
-                 .Where(x => x.Roll > @params.Cursor)
+        /// <summary>
+        /// ---default call for all students
+        /// </summary>
+        /// <param name="res"></param>
+        /// <param name="params"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<StudentModel>> GetAllStudentsDefaultAsync(HttpResponse res, CursorParams @params)
+        {
+            var stu = await _context.students.ToListAsync();
+            var leng = stu.ToArray().Length;
+
+            
+
+
+            stu = stu.OrderByDescending(x=>x.Id)
+                .Where(x => x.Id < @params.Cursor)
                  .Take(@params.Count)
-                 .ToListAsync();
-            var nextCursor = stu.Any() ? stu.LastOrDefault()?.Roll : 0;
+                 .ToList();
+            var nextCursor = stu.Any() ? stu.LastOrDefault().Id : 0;
+            //var nextCursor = stu.LastOrDefault().Roll;
+            if (nextCursor == leng)
+            {
+                nextCursor = 0;
+            }
 
             res.Headers.Add("X-Paggination", $"(Next Cursor)={nextCursor}");
+            // res.Headers.Append("count", $"{stu.}");
+
+            var records = stu.Select(x => new StudentModel()
+            {
+                Id=x.Id,
+                Roll = x.Roll,
+                Name = x.Name,
+                FathersName = x.FathersName,
+                Mothersname = x.Mothersname,
+                Class = x.Class,
+                City = x.City,
+                Address = x.Address
+            });
+
+            return records;
+        }
+        ///---- implementing sorting
+        /////1--- asending
+        ///0---desending
+
+        public async Task<IEnumerable<StudentModel>> GetAllStudentsDesendAsync(HttpResponse res,CursorParams @params,StudentModel student)
+        {
+            var stu = await _context.students.ToListAsync();
+            var leng = stu.ToArray().Length;
+            
+            if (student.Roll == 1)
+            {
+                stu = stu.OrderBy(x => x.Roll).ToList();
+            }
+            else
+            {
+                stu = stu.OrderByDescending(x => x.Roll).ToList();
+            }
+            
+
+            stu=stu                
+                .Where(x => x.Id > @params.Cursor)
+                 .Take(@params.Count)
+                 .ToList();
+             var nextCursor = stu.Any() ? stu.LastOrDefault().Id : 0;
+            //var nextCursor = stu.LastOrDefault().Roll;
+            if (nextCursor == leng)
+            {
+                nextCursor = 0;
+            }
+
+            res.Headers.Add("X-Paggination", $"(Next Cursor)={nextCursor}");
+           // res.Headers.Append("count", $"{stu.}");
 
             var records = stu.Select(x => new StudentModel()
             {
@@ -49,33 +103,192 @@ namespace Student.Repository
                 Mothersname=x.Mothersname,
                 Class=x.Class,
                 City=x.City,
-                Address=x.Address
-                
+                Address=x.Address 
             });
 
             return records;
         }
 
-
-        public async Task<List<StudentModel>> GetStudentById(int roll)
+        public async Task<IEnumerable<StudentModel>> GetAllStudentsAsendAsync(HttpResponse res, CursorParams @params,StudentModel student)
         {
-            var record = await _context.students
+            var stu = await _context.students.ToListAsync();
+            var leng = stu.ToArray().Length;
+
+            stu = stu
+                 .OrderByDescending(x => x.Id)
+                 .Where(x => x.Roll < @params.Cursor)
+                 .Take(@params.Count)
+                 .ToList();
+            var nextCursor = stu.Any() ? stu.LastOrDefault().Id : 0;
+            //var nextCursor = stu.LastOrDefault().Roll;
+            if (nextCursor == leng)
+            {
+                nextCursor = 0;
+            }
+
+            res.Headers.Add("X-Paggination", $"(Next Cursor)={nextCursor}");
+            // res.Headers.Append("count", $"{stu.}");
+
+            var records = stu.Select(x => new StudentModel()
+            {
+                Roll = x.Roll,
+                Name = x.Name,
+                FathersName = x.FathersName,
+                Mothersname = x.Mothersname,
+                Class = x.Class,
+                City = x.City,
+                Address = x.Address
+            });
+
+            return records;
+        }
+
+        public async Task<IEnumerable<StudentModel>> GetStudentsAsendAsync(HttpResponse res, CursorParams @params,SearchModel search)
+        {           
+            var stu = await _context.students.
+
+                ToListAsync();
+            
+            if (search.roll != 0)
+            {
+                stu = stu.Where(x => x.Roll == search.roll).ToList();
+            }
+            if (search.Class != 0)
+            {
+                stu = stu.Where(x => x.Class == search.Class).ToList();
+            }
+            if (search.name != null)
+            {
+                stu = stu.Where(x => x.Name.Contains(search.name, System.StringComparison.CurrentCultureIgnoreCase)).ToList();
+            }
+            if (search.fname != null)
+            {
+                stu = stu.Where(x => x.FathersName.Contains(search.fname, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            if (search.mname != null)
+            {
+                stu = stu.Where(x => x.Mothersname.Contains(search.mname, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            if (search.city != null)
+            {
+                stu = stu.Where(x => x.City.Contains(search.city, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            if (search.add != null)
+            {        
+                    stu = stu.Where(x => x.Address.Contains(search.add, StringComparison.OrdinalIgnoreCase)).ToList();       
+            }
+
+            stu = stu.OrderBy(x => x.Id)
+                 .Where(x => x.Id > @params.Cursor)
+                 .Take(@params.Count)
+                 .ToList();
+           
+
+            var nextCursor = stu.Any() ? stu.LastOrDefault().Roll : 0;
+            
+
+             res.Headers.Add("X-Paggination", $"{nextCursor}");
+           // res.Headers.Append("nextCur", $"{nextCursor}");
+
+            var records = stu.Select(x => new StudentModel()
+            {
+                Roll = x.Roll,
+                Name = x.Name,
+                FathersName = x.FathersName,
+                Mothersname = x.Mothersname,
+                Class = x.Class,
+                City = x.City,
+                Address = x.Address
+            });
+            
+
+            return records;
+        }
+
+        public async Task<IEnumerable<StudentModel>> GetStudentsDesendAsync(HttpResponse res, CursorParams @params, SearchModel search)
+        {
+            var stu = await _context.students.
+
+                ToListAsync();
+
+            if (search.roll != 0)
+            {
+                stu = stu.Where(x => x.Roll == search.roll).ToList();
+            }
+            if (search.Class != 0)
+            {
+                stu = stu.Where(x => x.Class == search.Class).ToList();
+            }
+            if (search.name != null)
+            {
+                stu = stu.Where(x => x.Name.Contains(search.name, System.StringComparison.CurrentCultureIgnoreCase)).ToList();
+            }
+            if (search.fname != null)
+            {
+                stu = stu.Where(x => x.FathersName.Contains(search.fname, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            if (search.mname != null)
+            {
+                stu = stu.Where(x => x.Mothersname.Contains(search.mname, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            if (search.city != null)
+            {
+                stu = stu.Where(x => x.City.Contains(search.city, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            if (search.add != null)
+            {
+                stu = stu.Where(x => x.Address.Contains(search.add, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            stu = stu.OrderByDescending(x => x.Id)
+                 .Where(x => x.Id < @params.Cursor)
+                 .Take(@params.Count)
+                 .ToList();
+
+
+            var nextCursor = stu.Any() ? stu.LastOrDefault().Roll : 0;
+
+
+            res.Headers.Add("X-Paggination", $"{nextCursor}");
+            // res.Headers.Append("nextCur", $"{nextCursor}");
+
+            var records = stu.Select(x => new StudentModel()
+            {
+                Roll = x.Roll,
+                Name = x.Name,
+                FathersName = x.FathersName,
+                Mothersname = x.Mothersname,
+                Class = x.Class,
+                City = x.City,
+                Address = x.Address
+            });
+
+
+            return records;
+        }
+        public async Task<IEnumerable<StudentModel>> GetStudentById(int roll)
+        {
+            var stu = await _context.students.ToListAsync();
+            //test----
+            stu = stu.OrderByDescending(x=>x.Roll).ToList();
+            var  c= stu.Count;
+            //-----
+            var record = stu
                         .Where(x => x.Roll == roll)
                         .Select(x => new StudentModel()
                         {
                             Id = x.Id,
-                            Roll = x.Roll,
-                            Name = x.Name,
+                            Roll = stu[c-1].Roll,
+                            Name = stu[c-1].Name,
                             Class = x.Class,
                             FathersName=x.FathersName,
                             Mothersname=x.Mothersname,
                             City=x.City,
                             Address=x.Address
-                        }).ToListAsync();
+                        });
             return record;
 
         }
-
 
         public async Task PostStudentAsync(int roll,StudentModel student)
         {
@@ -131,6 +344,8 @@ namespace Student.Repository
                 await _context.SaveChangesAsync();
             }
         }
+
+
 
     }
 

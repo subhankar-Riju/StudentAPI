@@ -20,13 +20,42 @@ namespace Student.Controllers
         {
             _studentRepository = studentRepository;
         }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAllStudentsAsync([FromQuery]CursorParams @params)
+        //1--assending
+        //0--decending
+        [HttpGet("all/{Count}/{Cursor}")]
+        public async Task<IActionResult> GetAllStudentsAsync([FromRoute]CursorParams @params)
         {
-            var records = await _studentRepository.GetAllStudentsAsync(Response,@params);
-
+            
+            var records = await _studentRepository.GetAllStudentsDefaultAsync(Response, @params);
             return Ok(records);
+
+        }
+
+        //1--assending
+        //-1--decending
+        [HttpGet("srch/{Count}/{Cursor}")]
+        public async Task<IActionResult> GetStudentsAsync([FromRoute]int Count, [FromRoute] int Cursor,[FromQuery]int order, [FromQuery]SearchModel search)
+        {
+            var @params = new CursorParams()
+            {
+                Count = Count,
+                Cursor = Cursor
+            };
+           
+            
+           
+            if(order==1)
+            {
+                var records = await _studentRepository.GetStudentsAsendAsync(Response, @params,search);
+                return Ok(records);
+            }
+            else
+            {
+                var records = await _studentRepository.GetStudentsDesendAsync(Response, @params, search);
+                return Ok(records);
+            }
+
+
         }
 
         [HttpGet("{roll}")]

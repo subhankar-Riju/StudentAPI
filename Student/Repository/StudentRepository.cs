@@ -377,10 +377,10 @@ namespace Student.Repository
                 res.Headers.Add("X-Paggination", $"{nextCursor}");
             }
 
-            /*
-            if (student.Name.Equals('1'))
+            
+            if (student.Name.Equals("1"))
             {
-                stu = stu.OrderBy(x => x.Roll)
+                stu = stu.OrderBy(x => x.Name)
                     .Skip(@params.Count*@params.Cursor)
                     .Take(@params.Count)
                     .ToList();
@@ -391,8 +391,8 @@ namespace Student.Repository
             }
             if (student.Name.Equals("-1"))
             {
-                stu = stu.OrderByDescending(x => x.Roll)
-                    .Where(x => x.Roll < @params.Cursor)
+                stu = stu.OrderByDescending(x => x.Name)
+                    .Skip(@params.Count*@params.Cursor)
                     .Take(@params.Count)
                     .ToList(); ;
                 var nextCursor = stu.Any() ? stu.LastOrDefault().Roll : 0;
@@ -400,7 +400,7 @@ namespace Student.Repository
 
                 res.Headers.Add("X-Paggination", $"{nextCursor}");
             }
-            */
+            
 
 
             // res.Headers.Append("nextCur", $"{nextCursor}");

@@ -345,6 +345,82 @@ namespace Student.Repository
             }
         }
 
+        //order by asending
+        public async Task<IEnumerable<StudentModel>> StudentAsending(HttpResponse res,CursorParams @params, StudentModel student)
+        {
+            var stu = await _context.students.
+
+                ToListAsync();
+
+            if (student.Roll == 1)
+            {
+                stu = stu.OrderBy(x=>x.Roll)
+                    //.Where(x=>x.Roll>@params.Cursor)
+                    .Skip(@params.Cursor*@params.Count)
+                    .Take(@params.Count)
+                    .ToList();
+                var nextCursor = stu.Any() ? stu.LastOrDefault().Roll : 0;
+
+
+                res.Headers.Add("X-Paggination", $"{nextCursor}");
+            }
+            if (student.Roll == -1)
+            {
+                stu = stu.OrderByDescending(x => x.Roll)
+                    //.Where(x => x.Roll < @params.Cursor)
+                    .Skip(@params.Cursor * @params.Count)
+                    .Take(@params.Count)
+                    .ToList(); ;
+                var nextCursor = stu.Any() ? stu.LastOrDefault().Roll : 0;
+
+
+                res.Headers.Add("X-Paggination", $"{nextCursor}");
+            }
+
+            /*
+            if (student.Name.Equals('1'))
+            {
+                stu = stu.OrderBy(x => x.Roll)
+                    .Skip(@params.Count*@params.Cursor)
+                    .Take(@params.Count)
+                    .ToList();
+                var nextCursor = stu.Any() ? stu.LastOrDefault().Roll : 0;
+
+
+                res.Headers.Add("X-Paggination", $"{nextCursor}");
+            }
+            if (student.Name.Equals("-1"))
+            {
+                stu = stu.OrderByDescending(x => x.Roll)
+                    .Where(x => x.Roll < @params.Cursor)
+                    .Take(@params.Count)
+                    .ToList(); ;
+                var nextCursor = stu.Any() ? stu.LastOrDefault().Roll : 0;
+
+
+                res.Headers.Add("X-Paggination", $"{nextCursor}");
+            }
+            */
+
+
+            // res.Headers.Append("nextCur", $"{nextCursor}");
+
+            var records = stu.Select(x => new StudentModel()
+            {
+                Id=x.Id,
+                Roll = x.Roll,
+                Name = x.Name,
+                FathersName = x.FathersName,
+                Mothersname = x.Mothersname,
+                Class = x.Class,
+                City = x.City,
+                Address = x.Address
+            });
+
+
+            return records;
+        }
+
 
 
     }

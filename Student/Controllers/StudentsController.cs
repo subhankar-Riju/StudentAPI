@@ -67,6 +67,13 @@ namespace Student.Controllers
             return Ok(record);
         }
 
+        [HttpGet("{Count}/{Cursor}")]
+        public async Task<IActionResult> StudentsOrderby([FromRoute]CursorParams @params,[FromQuery]StudentModel student)
+        {
+            var result = await _studentRepository.StudentAsending(Response, @params, student);
+
+            return Ok(result);
+        }
 
         [HttpPost("{roll}")]
         public async Task<IActionResult> PostStudent([FromRoute] int roll, [FromBody] StudentModel stu)

@@ -21,6 +21,8 @@ namespace Student.Repository
         Task<IEnumerable<StudentModel>> GetStudentsDesendAsync(HttpResponse res, CursorParams @params, SearchModel search);
         Task DeleteStudent(int roll);
 
+        Task<IEnumerable<StudentModel>> StudentAsending(HttpResponse res, CursorParams @params, StudentModel student);
+
 
     }
 }

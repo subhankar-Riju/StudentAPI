@@ -84,10 +84,10 @@ namespace Student.Controllers
         }
 
 
-        [HttpPut("{roll}")]
-        public async Task<IActionResult> PutStudent([FromRoute] int roll, [FromBody] StudentModel student)
+        [HttpPut("{roll}/{Class}")]
+        public async Task<IActionResult> PutStudent([FromRoute] int roll,[FromRoute]int Class, [FromBody] StudentModel student)
         {
-            await _studentRepository.PutStudentAsync(roll, student);
+            await _studentRepository.PutStudentAsync(roll,Class, student);
 
             return Ok();
         }
@@ -107,6 +107,17 @@ namespace Student.Controllers
             return Ok();
         }
 
+        [HttpGet("{Count}/{Cursor}/{Id=0}/{Roll=0}/{Name=0}/{FathersName=0}/{Mothersname=0}/{Address=0}/{City=0}/{Class=0}")]
+        public async Task<IActionResult> SearchOrder([FromRoute]CursorParams @params,
+            [FromRoute]StudentModel student_order,
+            [FromQuery]bool srch,
+            [FromQuery] StudentModel student_search)
+        {
+
+            var result =await  _studentRepository.StudentOrderSearch(Response, @params, student_order, student_search);
+
+            return Ok(result);
+        }
         
     }
 }

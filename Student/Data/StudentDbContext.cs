@@ -13,5 +13,6 @@ namespace Student.Data
         }
 
         public DbSet<Students> students { get; set; }
+        public DbSet<SignUp> signup { get; set; }
     }
 }

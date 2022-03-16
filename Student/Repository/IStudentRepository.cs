@@ -15,14 +15,15 @@ namespace Student.Repository
         Task<IEnumerable<StudentModel>> GetAllStudentsDesendAsync(HttpResponse res, CursorParams @params, StudentModel student);
         Task<IEnumerable<StudentModel>> GetStudentById(int StudentId);
         Task PostStudentAsync(int id, StudentModel student);
-        Task PutStudentAsync(int id, StudentModel studentModel);
+        Task PutStudentAsync(int id,int Class, StudentModel studentModel);
         Task PatchStudentAsync(int id, JsonPatchDocument student);
         Task<IEnumerable<StudentModel>> GetStudentsAsendAsync(HttpResponse res, CursorParams @params, SearchModel search);
         Task<IEnumerable<StudentModel>> GetStudentsDesendAsync(HttpResponse res, CursorParams @params, SearchModel search);
         Task DeleteStudent(int roll);
 
         Task<IEnumerable<StudentModel>> StudentAsending(HttpResponse res, CursorParams @params, StudentModel student);
-
+        Task<IEnumerable<StudentModel>> StudentOrderSearch(HttpResponse re
+            , CursorParams @params, StudentModel order, StudentModel search);
 
     }
 }

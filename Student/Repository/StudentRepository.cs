@@ -310,14 +310,18 @@ namespace Student.Repository
             
         }
 
-        public async Task PutStudentAsync(int roll,StudentModel studentModel)
+        public async Task PutStudentAsync(int roll,int Class,StudentModel studentModel)
         {
-            var student = await _context.students.FindAsync(roll);
+            var student = await _context.
+                students.FirstOrDefaultAsync(x => x.Class == Class && x.Roll == roll);
+                                
+                                
             if(student != null)
             {
+                student.Id = student.Id;
                 student.Name = studentModel.Name;
-                student.Roll = studentModel.Roll;
-                student.Class = studentModel.Class;
+                student.Roll = student.Roll;
+                student.Class = student.Class;
                 student.FathersName = studentModel.FathersName;
                 student.Mothersname = studentModel.Mothersname;
                 student.City = studentModel.City;
@@ -419,6 +423,103 @@ namespace Student.Repository
 
 
             return records;
+        }
+
+        public async Task<IEnumerable<StudentModel>> StudentOrderSearch(HttpResponse res
+            ,CursorParams @params,StudentModel order,StudentModel search)
+        {
+            var stu = await _context.students.
+
+                ToListAsync();
+
+            if (search.Roll != 0)
+            {
+                stu = stu.Where(x => x.Roll == search.Roll).ToList();
+            }
+            if (search.Class != 0)
+            {
+                stu = stu.Where(x => x.Class == search.Class).ToList();
+            }
+            if (search.Name != null)
+            {
+                stu = stu.Where(x => x.Name.Contains(search.Name, System.StringComparison.CurrentCultureIgnoreCase)).ToList();
+            }
+            if (search.FathersName != null)
+            {
+                stu = stu.Where(x => x.FathersName.Contains(search.FathersName, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            if (search.Mothersname != null)
+            {
+                stu = stu.Where(x => x.Mothersname.Contains(search.Mothersname, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            if (search.City != null)
+            {
+                stu = stu.Where(x => x.City.Contains(search.City, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            if (search.Address != null) {
+                stu = stu.Where(x => x.Address.Contains(search.Address, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            }
+            var nextCursor = 0;
+
+            stu = stu.OrderByDescending(x => x.Id).ToList();
+           /*         .Skip(@params.Count*@params.Cursor)
+                     .Take(@params.Count)
+                     .ToList();
+            var nextCursor = stu.Any() ? stu.LastOrDefault().Id : 0;
+            */
+           // res.Headers.Add("X-Paggination", $"{nextCursor}");
+
+
+            if (order.Roll == 1)
+            {
+                stu = stu.OrderBy(x => x.Roll).ToList();
+                    //.Where(x=>x.Roll>@params.Cursor)
+                
+            }
+            if (order.Roll == -1)
+            {
+                stu = stu.OrderByDescending(x => x.Roll).ToList();
+                                 
+            }
+
+
+            if (order.Name.Equals("1"))
+            {
+                stu = stu.OrderBy(x => x.Name).ToList();
+                                    
+            }
+            if (order.Name.Equals("-1"))
+            {
+                stu = stu.OrderByDescending(x => x.Name).ToList();
+                                  
+            }
+
+            stu=stu.Skip(@params.Count * @params.Cursor)
+                    .Take(@params.Count)
+                    .ToList(); ;
+            nextCursor = stu.Any() ? stu.LastOrDefault().Roll : 0;
+
+            res.Headers.Append("nextCur", $"{nextCursor}");
+
+            var records = stu.Select(x => new StudentModel()
+            {
+                Id = x.Id,
+                Roll = x.Roll,
+                Name = x.Name,
+                FathersName = x.FathersName,
+                Mothersname = x.Mothersname,
+                Class = x.Class,
+                City = x.City,
+                Address = x.Address
+            });
+
+
+            return records;
+
+
+
+
         }
 
 

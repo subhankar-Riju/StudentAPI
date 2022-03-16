@@ -62,3 +62,4 @@ C:\Users\abc\source\repos\Student\Student\obj\Debug\net5.0\Student.genruntimecon
 C:\Users\abc\source\repos\Student\Student\bin\Debug\net5.0\Microsoft.AspNetCore.JsonPatch.dll
 C:\Users\abc\source\repos\Student\Student\bin\Debug\net5.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 C:\Users\abc\source\repos\Student\Student\bin\Debug\net5.0\Newtonsoft.Json.Bson.dll
+C:\Users\abc\source\repos\Student\Student\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
